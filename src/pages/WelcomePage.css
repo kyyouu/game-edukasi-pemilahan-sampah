@@ -1,0 +1,213 @@
+/* WelcomePage – Desaverse Style (Clean Layout) */
+.welcome-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px 60px;
+  position: relative;
+  z-index: 5;
+  box-sizing: border-box;
+}
+
+.welcome-content {
+  width: 100%;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+/* Header Title Banner Card - Clean & Super Readable */
+.welcome-header-card {
+  width: 100%;
+  background: white;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-xl);
+  box-shadow: 6px 6px 0 var(--border-dark);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.welcome-top-pill {
+  background: var(--yellow);
+  border: 2.5px solid var(--border-dark);
+  border-radius: var(--radius-pill);
+  padding: 5px 18px;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  box-shadow: 2px 2px 0 var(--border-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.welcome-main-title {
+  font-family: var(--font-title);
+  font-size: clamp(2.4rem, 7vw, 3.5rem);
+  color: #1E8C74;
+  line-height: 1.05;
+  letter-spacing: 1px;
+}
+
+.welcome-tags-pill {
+  border: 2px solid var(--border-dark);
+  border-radius: var(--radius-pill);
+  padding: 5px 18px;
+  font-family: var(--font-title);
+  font-size: 0.82rem;
+  box-shadow: 2px 2px 0 var(--border-dark);
+}
+
+.welcome-location-pill {
+  background: #E8F5E9;
+  border: 2px solid var(--border-dark);
+  border-radius: var(--radius-pill);
+  padding: 4px 14px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: #2E7D32;
+  box-shadow: 2px 2px 0 var(--border-dark);
+}
+
+/* Greeting Hero Card */
+.welcome-greeting-card {
+  width: 100%;
+  background: white;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-xl);
+  box-shadow: 6px 6px 0 var(--border-dark);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+}
+
+.greeting-avatar-circle {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #FFFDE7, #E0F7FA);
+  border: 3px solid var(--border-dark);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 3px 3px 0 var(--border-dark);
+}
+
+.greeting-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.greeting-text h3 {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+
+.greeting-text p {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-medium);
+  line-height: 1.35;
+}
+
+/* Input Form Card */
+.welcome-form-card {
+  width: 100%;
+  background: white;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-xl);
+  box-shadow: 6px 6px 0 var(--border-dark);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.welcome-label {
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.welcome-input-wrap {
+  width: 100%;
+}
+
+.welcome-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 3px solid var(--border-dark);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  background: #FAFAFA;
+  text-align: center;
+  outline: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s;
+}
+
+.welcome-input:focus {
+  background: white;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(45, 184, 154, 0.3);
+}
+
+.welcome-input-error {
+  border-color: var(--red);
+  animation: shake 0.4s ease-in-out;
+}
+
+.welcome-err-msg {
+  color: var(--red-dark);
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+/* Buttons Group */
+.welcome-btn-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.welcome-sub-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .welcome-greeting-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .welcome-sub-btns {
+    grid-template-columns: 1fr;
+  }
+}

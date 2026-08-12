@@ -1,0 +1,121 @@
+/* Level3Page – Clean & Engaging Cartoon UI */
+.level3-container {
+  width: 100%;
+  max-width: 660px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.l3-card {
+  background: white;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-xl);
+  box-shadow: 6px 6px 0 var(--border-dark);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.l3-item-display {
+  background: #FFFDE7;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  text-align: center;
+  box-shadow: 5px 5px 0 var(--border-dark);
+}
+
+.l3-emoji {
+  font-size: 5.5rem;
+  display: block;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15));
+}
+
+.l3-item-title {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  color: var(--text-dark);
+}
+
+.l3-prompt-text {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-medium);
+  margin-top: 6px;
+}
+
+.l3-options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.l3-opt-btn {
+  padding: 18px 10px;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-xl);
+  background: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 4px 4px 0 var(--border-dark);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.l3-opt-btn:hover:not(:disabled) {
+  transform: translateY(-4px);
+  box-shadow: 7px 7px 0 var(--border-dark);
+  background: #FAFAFA;
+}
+
+.l3-opt-btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 2px 2px 0 var(--border-dark);
+}
+
+.l3-opt-btn.opt-correct {
+  background: #C8E6C9 !important;
+  border-color: var(--border-dark) !important;
+  animation: bounceIn 0.35s ease-out;
+}
+
+.l3-opt-btn.opt-wrong {
+  background: #FFCDD2 !important;
+  border-color: var(--border-dark) !important;
+  animation: shake 0.4s ease-in-out;
+}
+
+.l3-opt-btn.opt-dim {
+  opacity: 0.4;
+}
+
+.opt-icon { font-size: 2rem; }
+.opt-label { font-family: var(--font-title); font-size: 0.95rem; color: var(--text-dark); }
+
+.l3-explanation-box {
+  background: #E3F2FD;
+  border: 3px solid var(--border-dark);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  box-shadow: 4px 4px 0 var(--border-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.l3-explanation-box p {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+@media (max-width: 500px) {
+  .l3-options-grid { grid-template-columns: 1fr; }
+}

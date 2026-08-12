@@ -1,0 +1,139 @@
+/* ResultPage – Desaverse Style */
+.result-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 80px;
+  position: relative;
+  z-index: 5;
+}
+
+.result-card {
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-xl);
+  box-shadow: 6px 6px 0 var(--border-dark);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.result-title-badge {
+  background: var(--yellow);
+  border: 2px solid var(--border-dark);
+  border-radius: var(--radius-pill);
+  padding: 4px 18px;
+  font-family: var(--font-title);
+  font-size: 0.88rem;
+  box-shadow: 2px 2px 0 var(--border-dark);
+}
+
+.result-main-title {
+  font-family: var(--font-title);
+  font-size: 2.4rem;
+  color: var(--text-dark);
+  margin-top: -8px;
+}
+
+.result-player-text {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+/* Big Score Circle */
+.result-score-circle {
+  width: 130px; height: 130px;
+  background: var(--teal);
+  border: 3.5px solid var(--border-dark);
+  border-radius: 50%;
+  box-shadow: 4px 4px 0 var(--border-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.result-score-num {
+  font-family: var(--font-title);
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.result-score-lbl {
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Level Breakdown Box */
+.result-breakdown-box {
+  width: 100%;
+  background: #F8FAFC;
+  border: 2.5px solid var(--border-dark);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: 3px 3px 0 var(--border-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.breakdown-header {
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.breakdown-bar-bg {
+  flex: 1;
+  height: 12px;
+  background: #E2E8F0;
+  border: 1.5px solid var(--border-dark);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.breakdown-bar-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: var(--radius-pill);
+}
+
+.breakdown-score-txt {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  min-width: 60px;
+  text-align: right;
+}
+
+.result-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .result-card { padding: 24px 16px; }
+  .result-main-title { font-size: 2rem; }
+}

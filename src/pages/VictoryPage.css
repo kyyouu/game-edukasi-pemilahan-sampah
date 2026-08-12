@@ -1,0 +1,108 @@
+/* VictoryPage – Desaverse Style */
+.victory-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  position: relative;
+  z-index: 5;
+}
+
+.victory-card {
+  width: 100%;
+  max-width: 640px;
+  background: white;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-xl);
+  box-shadow: 6px 6px 0 var(--border-dark);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+
+/* Scene Illustration Box */
+.victory-village-scene {
+  width: 100%;
+  height: 250px;
+  border: 3.5px solid var(--border-dark);
+  border-radius: var(--radius-lg);
+  box-shadow: 4px 4px 0 var(--border-dark);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  transition: all 0.8s ease;
+  background-size: cover;
+  background-position: center;
+}
+
+.scene-dirty {
+  background-image:
+    linear-gradient(180deg, rgba(120,110,100,0.4) 0%, rgba(80,70,60,0.6) 100%),
+    url('/village_dirty.png');
+}
+
+.scene-cleaning {
+  background-image:
+    linear-gradient(180deg, rgba(255,255,200,0.3) 0%, rgba(150,220,150,0.5) 100%),
+    url('/village_dirty.png');
+}
+
+.scene-clean {
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(200,250,200,0.3) 100%),
+    url('/village_clean.png');
+}
+
+
+.village-elements {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  font-size: 3.2rem;
+  margin-top: 10px;
+}
+
+.village-people {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  font-size: 2rem;
+  z-index: 2;
+}
+
+.village-ground {
+  height: 40px;
+  border-top: 2px solid var(--border-dark);
+  margin: 0 -16px -16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  transition: background 0.8s ease;
+}
+
+.ground-dirty { background: #6D4C41; color: #D7CCC8; }
+.ground-clean { background: var(--ground-green); color: white; }
+
+.victory-stage-title {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  color: var(--text-dark);
+}
+
+.victory-stage-desc {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-medium);
+  line-height: 1.5;
+}
