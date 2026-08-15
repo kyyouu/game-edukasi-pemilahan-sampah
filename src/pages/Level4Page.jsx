@@ -113,8 +113,8 @@ export default function Level4Page() {
               <span>👹</span>
               <span>DR. SAMPAH</span>
             </div>
-            <div style={{ fontWeight: 800, color: monsterHp <= 30 ? 'var(--red-dark)' : 'var(--text-dark)', fontSize: '0.95rem' }}>
-              HP: {monsterHp}%
+            <div className="boss-hp-label" style={{ color: monsterHp <= 30 ? 'var(--red-dark)' : 'var(--text-dark)' }}>
+              ❤️ HP: {monsterHp}%
             </div>
           </div>
 
@@ -172,9 +172,9 @@ export default function Level4Page() {
         {/* Question Card */}
         {!bossDefeated ? (
           <div className="l4-question-card animate-fadeInUp">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span className="welcome-sub-badge" style={{ fontSize: '0.8rem' }}>
-                Serangan {currentQ + 1} / {bossQuestions.length}
+            <div className="l4-q-header-row">
+              <span className="l4-attack-badge">
+                ⚔️ Serangan {currentQ + 1} / {bossQuestions.length}
               </span>
               <span className="score-badge" style={{ fontSize: '0.82rem', padding: '2px 10px' }}>
                 ⭐ +{score} XP

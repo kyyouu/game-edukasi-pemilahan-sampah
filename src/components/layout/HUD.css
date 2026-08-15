@@ -1,59 +1,14 @@
-/* HUD Styles */
-.hud-logo-icon { font-size: 1.1rem; }
+/* HUD.css - Enhanced Responsive HUD */
 
-.hud-xp-section {
+/* Desktop/Mobile visibility helpers */
+.hud-desktop-only {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 130px;
+}
+.hud-mobile-only {
+  display: none;
 }
 
-.hud-xp-label {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-game);
-  font-size: 0.62rem;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-}
-
-.hud-xp-val { color: var(--neon-green); }
-
-.hud-xp-bar {
-  height: 8px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.06);
-}
-
-.hud-xp-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
-  border-radius: 4px;
-  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
-  box-shadow: 0 0 8px rgba(0,255,136,0.5);
-}
-
-.hud-player-info {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.3;
-}
-
-.hud-player-name {
-  font-weight: 800;
-  font-size: 0.85rem;
-  color: var(--text-white);
-}
-
-.hud-player-role {
-  font-size: 0.65rem;
-  color: var(--neon-green);
-  font-weight: 700;
-  font-family: var(--font-game);
-}
-
-@media (max-width: 600px) {
-  .hud-xp-section { display: none; }
+@media (max-width: 768px) {
+  .hud-desktop-only { display: none !important; }
+  .hud-mobile-only  { display: flex !important; }
 }

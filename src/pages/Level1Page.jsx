@@ -102,7 +102,7 @@ export default function Level1Page() {
         <div className="l1-stats-bar">
           <div className={`l1-stat-item ${seconds <= 10 ? 'urgent' : ''}`}>
             <span>⏰</span>
-            <span>{seconds}d</span>
+            <span>{seconds}s</span>
           </div>
 
           <div className="l1-timer-box">

@@ -61,7 +61,7 @@ export default function ResultPage() {
         </p>
 
         {/* Stars */}
-        <div>
+        <div className="result-stars-section animate-bounceIn">
           <div className="stars-container">
             {[1, 2, 3, 4, 5].map(s => (
               <span key={s} className={`star ${starsShown >= s ? 'active' : ''}`}>
@@ -80,8 +80,8 @@ export default function ResultPage() {
           <span className="result-score-lbl">Total XP</span>
         </div>
 
-        <p style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--teal-dark)' }}>
-          Tingkat Keberhasilan: {scorePercent}%
+        <p className="result-percent-text">
+          🏅 Tingkat Keberhasilan: {scorePercent}%
         </p>
 
         {/* Breakdown */}
@@ -119,7 +119,7 @@ export default function ResultPage() {
         </div>
 
         {scorePercent < 80 && (
-          <p style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-medium)' }}>
+          <p className="result-tip-text">
             💡 Kumpulkan skor ≥ 80% untuk mendapatkan Sertifikat Pahlawan Lingkungan!
           </p>
         )}
