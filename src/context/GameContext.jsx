@@ -61,7 +61,8 @@ export function GameProvider({ children }) {
   }, [state.playerName]);
 
   // Computed values
-  const scorePercent = Math.min(100, Math.round((state.totalScore / 1000) * 100));
+  const MAX_POSSIBLE_SCORE = 730;
+  const scorePercent = Math.min(100, Math.round((state.totalScore / MAX_POSSIBLE_SCORE) * 100));
 
   const getStars = () => {
     if (scorePercent >= 90) return 5;

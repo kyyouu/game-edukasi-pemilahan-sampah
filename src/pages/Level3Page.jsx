@@ -21,14 +21,15 @@ const CATEGORY_CONFIG = [
   { id: 2, name: 'B3',        emoji: '☣️', color: '#c0392b', bg: '#fde8e8', border: '#c0392b' },
 ];
 
-// Ambil 4 kasus secara acak dari 9 yang tersedia (cukup untuk anak SD)
-const GAME_CASES = shuffle(detectiveCases).slice(0, 4);
-const TOTAL_CASES = GAME_CASES.length;
+const TOTAL_CASES = 2; // 2 kasus untuk babak 3
 const CLUES_TO_SELECT = 3;
 
 export default function Level3Page() {
   const { state, dispatch } = useGame();
   const navigate = useNavigate();
+
+  // Shuffle 2 kasus secara acak per game session
+  const [gameCases] = useState(() => shuffle(detectiveCases).slice(0, TOTAL_CASES));
 
   // ─── Global state ─────────────────────────────────────────────────────────
   const [caseIdx, setCaseIdx]           = useState(0);
@@ -50,11 +51,12 @@ export default function Level3Page() {
 
   useEffect(() => { if (!state.playerName) navigate('/'); }, [state.playerName, navigate]);
 
-  const currentCase = GAME_CASES[caseIdx];
+  const currentCase = gameCases[caseIdx];
 
   // Inisialisasi kasus baru
   const initCase = useCallback((idx) => {
-    const c = GAME_CASES[idx];
+    const c = gameCases[idx];
+    if (!c) return;
     setShuffledClues(shuffle(c.clues));
     setShuffledActions(shuffle(c.actions));
     setSelectedClues([]);
@@ -65,7 +67,7 @@ export default function Level3Page() {
     setIsPerfect(false);
     setFeedbackMsg('');
     setPhase('intro');
-  }, []);
+  }, [gameCases]);
 
   useEffect(() => {
     initCase(0);
@@ -204,7 +206,7 @@ export default function Level3Page() {
 
         {/* ── CASE PROGRESS DOTS ──────────────────────────────────── */}
         <div className="progress-dots">
-          {GAME_CASES.map((_, i) => (
+          {gameCases.map((_, i) => (
             <div
               key={i}
               className={`prog-dot ${

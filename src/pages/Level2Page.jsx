@@ -9,10 +9,7 @@ import './Level2Page.css';
 const ITEM_TIME   = 9;    // detik per item sebelum lolos
 const MAX_LIVES   = 3;
 const PTS_CORRECT = 20;
-const TOTAL_ITEMS = 10; // 10 item, cukup untuk anak SD
-
-// Shuffle array once, ambil 10 item
-const SHUFFLED = [...conveyorItems].sort(() => Math.random() - 0.5).slice(0, TOTAL_ITEMS);
+const TOTAL_ITEMS = 5; // 5 item untuk babak 2
 
 const CATEGORY_CONFIG = [
   { id: 0, name: 'Organik',    emoji: '🌿', color: '#2ECC71', shadow: '#1a8a45', bg: '#e8fdf0', border: '#27ae60' },
@@ -23,6 +20,11 @@ const CATEGORY_CONFIG = [
 export default function Level2Page() {
   const { state, dispatch } = useGame();
   const navigate = useNavigate();
+
+  // Shuffle array once per game session, ambil 5 item
+  const [shuffledItems] = useState(() =>
+    [...conveyorItems].sort(() => Math.random() - 0.5).slice(0, TOTAL_ITEMS)
+  );
 
   // Game state
   const [phase, setPhase]         = useState('intro'); // intro | playing | choosing | feedback | done
@@ -48,7 +50,7 @@ export default function Level2Page() {
   useEffect(() => { livesRef.current   = lives;   }, [lives]);
   useEffect(() => { itemIdxRef.current = itemIdx; }, [itemIdx]);
 
-  const currentItem = SHUFFLED[itemIdx];
+  const currentItem = shuffledItems[itemIdx];
 
   // ─── Start per-item countdown ───────────────────────────────────────────────
   const startItemTimer = useCallback(() => {
@@ -79,7 +81,7 @@ export default function Level2Page() {
     setCombo(0);
     const newLives = Math.max(0, livesRef.current - 1);
     setLives(newLives);
-    const missed = SHUFFLED[itemIdxRef.current];
+    const missed = shuffledItems[itemIdxRef.current];
     setFeedback({
       type: 'missed',
       item: missed,

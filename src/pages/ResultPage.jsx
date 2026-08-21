@@ -41,8 +41,8 @@ export default function ResultPage() {
 
   const levelData = [
     { key: 'level1', name: 'Babak 1 – Bersihkan Sampah', max: 200, icon: '🏫' },
-    { key: 'level2', name: 'Babak 2 – Pilah Sampah', max: 300, icon: '♻️' },
-    { key: 'level3', name: 'Babak 3 – Tebak Sampah', max: 240, icon: '🔍' },
+    { key: 'level2', name: 'Babak 2 – Pilah Sampah', max: 150, icon: '♻️' },
+    { key: 'level3', name: 'Babak 3 – Tebak Sampah', max: 120, icon: '🔍' },
     { key: 'level4', name: 'Babak 4 – Boss Dr. Sampah', max: 260, icon: '👹' },
   ];
 
