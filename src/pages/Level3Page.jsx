@@ -1,107 +1,78 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
-import { detectiveCases, CATEGORIES } from '../data/trashItems';
+import { detectiveCases } from '../data/trashItems';
 import { sfx } from '../utils/sounds';
 import GameLayout from '../components/layout/GameLayout';
 import './Level3Page.css';
 
-// Skor per komponen kasus
-const PTS_CLUE_CORRECT   = 5;  // per petunjuk relevan yang benar dipilih
-const PTS_CATEGORY        = 15; // kategori benar
-const PTS_ACTION          = 15; // tindakan benar
-const PTS_PERFECT_CASE    = 10; // bonus kasus sempurna
+// Skor per komponen
+const PTS_CATEGORY     = 20; // kategori benar
+const PTS_ACTION       = 20; // tindakan benar
+const PTS_PERFECT_CASE = 10; // bonus kasus sempurna
 
 // Shuffle utility
 const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
 
 const CATEGORY_CONFIG = [
-  { id: 0, name: 'Organik',   emoji: '🌿', color: '#27ae60', bg: '#e8fdf0', border: '#27ae60' },
-  { id: 1, name: 'Anorganik', emoji: '♻️', color: '#2980b9', bg: '#e8f4fd', border: '#2980b9' },
+  { id: 0, name: 'Organik',   emoji: '🌿', color: '#27ae60', bg: '#e8fdf0', border: '#27ae60',
+    desc: 'Bisa hancur sendiri di tanah' },
+  { id: 1, name: 'Anorganik', emoji: '♻️', color: '#2980b9', bg: '#e8f4fd', border: '#2980b9',
+    desc: 'Bisa didaur ulang jadi barang baru' },
 ];
 
-const TOTAL_CASES = 2; // 2 kasus untuk babak 3
-const CLUES_TO_SELECT = 3;
+const TOTAL_CASES = 2;
 
 export default function Level3Page() {
   const { state, dispatch } = useGame();
   const navigate = useNavigate();
 
-  // Shuffle 2 kasus secara acak per game session
   const [gameCases] = useState(() => shuffle(detectiveCases).slice(0, TOTAL_CASES));
 
-  // ─── Global state ─────────────────────────────────────────────────────────
-  const [caseIdx, setCaseIdx]           = useState(0);
-  const [score, setScore]               = useState(0);
-  const [results, setResults]           = useState([]); // array per-kasus
-  const [finished, setFinished]         = useState(false);
+  // Global state
+  const [caseIdx, setCaseIdx]     = useState(0);
+  const [score, setScore]         = useState(0);
+  const [results, setResults]     = useState([]);
+  const [finished, setFinished]   = useState(false);
 
-  // ─── Per-case state ────────────────────────────────────────────────────────
-  const [phase, setPhase]               = useState('intro');    // intro | clues | category | action | summary
-  const [shuffledClues, setShuffledClues] = useState([]);
-  const [selectedClues, setSelectedClues] = useState([]);       // array of clue IDs
-  const [wrongClues, setWrongClues]     = useState([]);         // IDs petunjuk salah yang dipilih
+  // Per-case state
+  const [phase, setPhase]                 = useState('intro');  // intro | kategori | aksi | ringkasan
   const [categoryAnswer, setCategoryAnswer] = useState(null);
-  const [actionAnswer, setActionAnswer] = useState(null);
+  const [actionAnswer, setActionAnswer]   = useState(null);
   const [shuffledActions, setShuffledActions] = useState([]);
-  const [caseScore, setCaseScore]       = useState(0);
-  const [isPerfect, setIsPerfect]       = useState(false);
-  const [feedbackMsg, setFeedbackMsg]   = useState('');
+  const [caseScore, setCaseScore]         = useState(0);
+  const [feedbackMsg, setFeedbackMsg]     = useState('');
+  const [showFunFact, setShowFunFact]     = useState(false);
 
   useEffect(() => { if (!state.playerName) navigate('/'); }, [state.playerName, navigate]);
 
   const currentCase = gameCases[caseIdx];
 
-  // Inisialisasi kasus baru
   const initCase = useCallback((idx) => {
     const c = gameCases[idx];
     if (!c) return;
-    setShuffledClues(shuffle(c.clues));
     setShuffledActions(shuffle(c.actions));
-    setSelectedClues([]);
-    setWrongClues([]);
     setCategoryAnswer(null);
     setActionAnswer(null);
     setCaseScore(0);
-    setIsPerfect(false);
     setFeedbackMsg('');
+    setShowFunFact(false);
     setPhase('intro');
   }, [gameCases]);
 
-  useEffect(() => {
-    initCase(0);
-  }, []); // eslint-disable-line
+  useEffect(() => { initCase(0); }, []); // eslint-disable-line
 
-  // ─── Phase: intro → clues ─────────────────────────────────────────────────
-  const handleStartInvestigation = () => {
+  // ─── Phase: intro → kategori ──────────────────────────────────────────────
+  const handleStart = () => {
     sfx.click();
-    setPhase('clues');
+    setShowFunFact(true);
+    setTimeout(() => {
+      setShowFunFact(false);
+      setPhase('kategori');
+    }, 2200);
   };
 
-  // ─── Phase: clues — pilih petunjuk ────────────────────────────────────────
-  const handleClueSelect = (clue) => {
-    if (selectedClues.includes(clue.id) || selectedClues.length >= CLUES_TO_SELECT) return;
-    sfx.click();
-
-    const newSelected = [...selectedClues, clue.id];
-    setSelectedClues(newSelected);
-
-    if (!clue.isRelevant) {
-      // Petunjuk salah — tandai merah
-      setWrongClues(prev => [...prev, clue.id]);
-    } else {
-      // Petunjuk benar
-      setCaseScore(prev => prev + PTS_CLUE_CORRECT);
-    }
-
-    if (newSelected.length >= CLUES_TO_SELECT) {
-      // Semua petunjuk sudah dipilih, tampilkan kesimpulan sebentar lalu ke kategori
-      sfx.correct();
-      setTimeout(() => setPhase('category'), 1200);
-    }
-  };
-
-  // ─── Phase: category — pilih kategori ─────────────────────────────────────
+  // ─── Phase: kategori ─────────────────────────────────────────────────────
   const handleCategoryAnswer = (catId) => {
     if (categoryAnswer !== null) return;
     sfx.click();
@@ -111,19 +82,19 @@ export default function Level3Page() {
     if (correct) {
       sfx.correct();
       setCaseScore(prev => prev + PTS_CATEGORY);
-      setFeedbackMsg(`✅ Benar! Ini memang sampah ${CATEGORY_CONFIG[currentCase.category].name}!`);
+      setFeedbackMsg(`🎉 Benar banget! Ini memang sampah ${CATEGORY_CONFIG[currentCase.category].name}!`);
     } else {
       sfx.wrong();
-      setFeedbackMsg(`❌ Kurang tepat. ${currentCase.name} adalah sampah ${CATEGORY_CONFIG[currentCase.category].name}.`);
+      setFeedbackMsg(`❌ Hampir! ${currentCase.name} itu sampah ${CATEGORY_CONFIG[currentCase.category].name}.`);
     }
 
     setTimeout(() => {
       setFeedbackMsg('');
-      setPhase('action');
-    }, 1600);
+      setPhase('aksi');
+    }, 1800);
   };
 
-  // ─── Phase: action — pilih tindakan ───────────────────────────────────────
+  // ─── Phase: aksi ─────────────────────────────────────────────────────────
   const handleActionAnswer = (actionIdx) => {
     if (actionAnswer !== null) return;
     sfx.click();
@@ -133,33 +104,30 @@ export default function Level3Page() {
     if (correct) {
       sfx.correct();
       setCaseScore(prev => prev + PTS_ACTION);
-      setFeedbackMsg('✅ Pilihan tindakan yang tepat!');
+      setFeedbackMsg('✅ Pilihan yang tepat! Kamu hebat! 🌟');
     } else {
       sfx.wrong();
       const correctAct = shuffledActions.find(a => a.correct);
-      setFeedbackMsg(`❌ Kurang tepat. Tindakan yang benar: "${correctAct?.text}"`);
+      setFeedbackMsg(`❌ Hmm, kurang tepat! Yang benar: "${correctAct?.text}"`);
     }
 
     setTimeout(() => {
       setFeedbackMsg('');
-      setPhase('summary');
-    }, 1600);
+      setPhase('ringkasan');
+    }, 1800);
   };
 
-  // ─── Phase: summary → next case ──────────────────────────────────────────
+  // ─── Phase: ringkasan → next ──────────────────────────────────────────────
   const handleNextCase = () => {
     sfx.click();
 
-    // Hitung apakah sempurna (semua petunjuk relevan + kategori + tindakan benar)
-    const noWrongClues    = wrongClues.length === 0;
-    const catCorrect      = categoryAnswer === currentCase.category;
-    const actCorrect      = actionAnswer !== null && shuffledActions[actionAnswer]?.correct;
-    const perfect         = noWrongClues && catCorrect && actCorrect;
-    const finalCaseScore  = caseScore + (perfect ? PTS_PERFECT_CASE : 0);
+    const catCorrect = categoryAnswer === currentCase.category;
+    const actCorrect = actionAnswer !== null && shuffledActions[actionAnswer]?.correct;
+    const perfect    = catCorrect && actCorrect;
+    const finalScore = caseScore + (perfect ? PTS_PERFECT_CASE : 0);
 
-    setIsPerfect(perfect);
-    setScore(prev => prev + finalCaseScore);
-    setResults(prev => [...prev, { id: currentCase.id, perfect, score: finalCaseScore }]);
+    setScore(prev => prev + finalScore);
+    setResults(prev => [...prev, { id: currentCase.id, perfect, score: finalScore }]);
 
     if (caseIdx + 1 >= TOTAL_CASES) {
       sfx.levelComplete();
@@ -178,14 +146,10 @@ export default function Level3Page() {
     navigate('/level/4');
   };
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────
-  const relevantCount     = selectedClues.filter(id => {
-    const cl = currentCase?.clues.find(c => c.id === id);
-    return cl?.isRelevant;
-  }).length;
-  const progressPct = ((caseIdx) / TOTAL_CASES) * 100;
-
   if (!currentCase) return null;
+
+  const catCorrect = categoryAnswer === currentCase.category;
+  const actCorrect = actionAnswer !== null && shuffledActions[actionAnswer]?.correct;
 
   return (
     <GameLayout currentLevel={3}>
@@ -194,7 +158,7 @@ export default function Level3Page() {
         {/* ── HEADER ──────────────────────────────────────────────── */}
         <div className="level-header animate-fadeInUp">
           <div className="level-badge badge-purple">🔎 BABAK 3</div>
-          <h2 className="level-title">Detektif Sampah!</h2>
+          <h2 className="level-title">Tebak Sampahku!</h2>
           <p className="level-desc">
             Kasus {caseIdx + 1} dari {TOTAL_CASES} &nbsp;|&nbsp;
             <span className="score-badge" style={{ fontSize: '0.82rem', padding: '2px 10px' }}>
@@ -215,15 +179,15 @@ export default function Level3Page() {
           ))}
         </div>
 
-        {/* ── PHASE INDICATOR ─────────────────────────────────────── */}
+        {/* ── PHASE INDICATOR (simpel) ─────────────────────────────── */}
         {!finished && (
           <div className="detective-phase-bar">
-            {['intro', 'clues', 'category', 'action', 'summary'].map((ph, i) => {
-              const phaseOrder = { intro: 0, clues: 1, category: 2, action: 3, summary: 4 };
-              const phaseLabels = ['Kasus', 'Petunjuk', 'Kategori', 'Tindakan', 'Ringkasan'];
-              const phaseIcons  = ['📋', '🔍', '🗂️', '🛠️', '⭐'];
+            {['intro', 'kategori', 'aksi', 'ringkasan'].map((ph, i) => {
+              const phaseOrder  = { intro: 0, kategori: 1, aksi: 2, ringkasan: 3 };
+              const phaseLabels = ['Kenalan', 'Tebak Jenis', 'Apa Tindakannya?', 'Hasil'];
+              const phaseIcons  = ['👀', '🤔', '🛠️', '⭐'];
               const currentOrd  = phaseOrder[phase] ?? 0;
-              const isDone = i < currentOrd;
+              const isDone   = i < currentOrd;
               const isActive = i === currentOrd;
               return (
                 <div key={ph} className={`phase-step ${isDone ? 'phase-done' : isActive ? 'phase-active' : 'phase-locked'}`}>
@@ -239,112 +203,60 @@ export default function Level3Page() {
         {!finished && (
           <div className="detective-board animate-fadeInUp">
 
-            {/* Case object display */}
+            {/* Gambar / Emoji item */}
             <div className="detective-subject">
-              <div className="subject-emoji animate-float">{currentCase.emoji}</div>
+              {currentCase.image ? (
+                <img
+                  src={currentCase.image}
+                  alt={currentCase.name}
+                  className="detective-item-img animate-float"
+                />
+              ) : (
+                <div className="subject-emoji animate-float">{currentCase.emoji}</div>
+              )}
               <div className="subject-name">{currentCase.name}</div>
             </div>
 
             {/* ── PHASE: INTRO ──────────────────────────────────────── */}
             {phase === 'intro' && (
               <div className="detective-intro animate-bounceIn">
-                <div className="mission-badge">📋 KASUS BARU</div>
+                <div className="mission-badge">📋 KASUS BARU!</div>
                 <p className="mission-text">{currentCase.mission}</p>
-                <p className="mission-instruction">
-                  🔍 Cari <strong>3 petunjuk</strong> yang relevan untuk menentukan
-                  jenis dan pengelolaan sampah ini!
-                </p>
-                <button
-                  id={`btn-l3-investigate-${caseIdx}`}
-                  className="btn btn-purple btn-lg btn-full"
-                  onClick={handleStartInvestigation}
-                >
-                  🔎 MULAI INVESTIGASI!
-                </button>
-              </div>
-            )}
 
-            {/* ── PHASE: CLUES ──────────────────────────────────────── */}
-            {phase === 'clues' && (
-              <div className="detective-clues">
-                <div className="clues-header">
-                  <span className="clues-title">🔍 Pilih 3 Petunjuk yang Relevan:</span>
-                  <span className={`clues-count ${selectedClues.length >= CLUES_TO_SELECT ? 'count-done' : ''}`}>
-                    {selectedClues.length} / {CLUES_TO_SELECT}
-                  </span>
-                </div>
-
-                {/* Progress dots for clues */}
-                <div className="clue-progress-dots">
-                  {Array.from({ length: CLUES_TO_SELECT }).map((_, i) => (
-                    <div key={i} className={`clue-dot ${i < selectedClues.length ? 'clue-dot-filled' : ''}`} />
-                  ))}
-                </div>
-
-                <div className="clue-cards-grid">
-                  {shuffledClues.map((clue, i) => {
-                    const isSelected = selectedClues.includes(clue.id);
-                    const isWrong    = wrongClues.includes(clue.id);
-                    return (
-                      <button
-                        key={clue.id}
-                        id={`clue-${clue.id}`}
-                        className={`clue-card ${isSelected ? (isWrong ? 'clue-wrong' : 'clue-correct') : ''} ${!isSelected && selectedClues.length >= CLUES_TO_SELECT ? 'clue-disabled' : ''}`}
-                        onClick={() => handleClueSelect(clue)}
-                        disabled={isSelected || selectedClues.length >= CLUES_TO_SELECT}
-                      >
-                        <span className="clue-num">{i + 1}</span>
-                        <span className="clue-text">{clue.text}</span>
-                        {isSelected && (
-                          <span className="clue-mark">{isWrong ? '❌' : '✅'}</span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {selectedClues.length >= CLUES_TO_SELECT && (
-                  <div className="clues-conclusion-preview animate-fadeInUp">
-                    <span className="conclusion-icon">💡</span>
-                    <span>Petunjuk terkumpul! Menyusun kesimpulan…</span>
+                {/* Fun Fact bubble */}
+                {showFunFact && (
+                  <div className="funfact-bubble animate-bounceIn">
+                    💡 <strong>Tahukah kamu?</strong><br/>
+                    {currentCase.funFact}
                   </div>
+                )}
+
+                {!showFunFact && (
+                  <button
+                    id={`btn-l3-start-${caseIdx}`}
+                    className="btn btn-purple btn-lg btn-full"
+                    onClick={handleStart}
+                  >
+                    🔍 Yuk Tebak!
+                  </button>
                 )}
               </div>
             )}
 
-            {/* ── PHASE: CATEGORY ────────────────────────────────────── */}
-            {phase === 'category' && (
+            {/* ── PHASE: KATEGORI ────────────────────────────────────── */}
+            {phase === 'kategori' && (
               <div className="detective-category animate-fadeInUp">
-                {/* Kesimpulan dari petunjuk */}
-                <div className="conclusion-box">
-                  <div className="conclusion-header">
-                    <span>🔎</span>
-                    <span>Berdasarkan {relevantCount} petunjuk relevan yang kamu temukan:</span>
-                  </div>
-                  <div className="selected-clues-list">
-                    {selectedClues.map(id => {
-                      const cl = currentCase.clues.find(c => c.id === id);
-                      const isRel = cl?.isRelevant;
-                      return cl ? (
-                        <div key={id} className={`selected-clue-item ${isRel ? 'item-relevant' : 'item-irrelevant'}`}>
-                          {isRel ? '✅' : '❌'} {cl.text}
-                        </div>
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-
                 <div className="category-question">
-                  <span>🗂️</span>
-                  <span><strong>{currentCase.name}</strong> termasuk sampah jenis apa?</span>
+                  <span>🤔</span>
+                  <span><strong>{currentCase.name}</strong> termasuk sampah apa?</span>
                 </div>
 
-                <div className="category-choice-grid">
+                <div className="category-choice-grid l3-cat-big-grid">
                   {CATEGORY_CONFIG.map(cat => {
                     let cls = '';
                     if (categoryAnswer !== null) {
                       if (cat.id === currentCase.category) cls = 'cat-btn-correct';
-                      else if (cat.id === categoryAnswer) cls = 'cat-btn-wrong';
+                      else if (cat.id === categoryAnswer)  cls = 'cat-btn-wrong';
                       else cls = 'cat-btn-dim';
                     }
                     return (
@@ -352,15 +264,13 @@ export default function Level3Page() {
                         key={cat.id}
                         id={`l3-cat-${cat.id}`}
                         className={`detective-cat-btn ${cls}`}
-                        style={{
-                          background: cat.bg,
-                          borderColor: cat.border,
-                        }}
+                        style={{ background: cat.bg, borderColor: cat.border }}
                         onClick={() => handleCategoryAnswer(cat.id)}
                         disabled={categoryAnswer !== null}
                       >
                         <span className="dcat-emoji">{cat.emoji}</span>
                         <span className="dcat-name" style={{ color: cat.color }}>{cat.name}</span>
+                        <span className="dcat-desc">{cat.desc}</span>
                         {cls === 'cat-btn-correct' && <span className="dcat-mark">✅</span>}
                         {cls === 'cat-btn-wrong'   && <span className="dcat-mark">❌</span>}
                       </button>
@@ -369,32 +279,40 @@ export default function Level3Page() {
                 </div>
 
                 {feedbackMsg && (
-                  <div className={`detective-feedback ${categoryAnswer === currentCase.category ? 'feedback-correct' : 'feedback-wrong'}`}>
+                  <div className={`detective-feedback ${catCorrect ? 'feedback-correct' : 'feedback-wrong'}`}>
                     {feedbackMsg}
                   </div>
                 )}
               </div>
             )}
 
-            {/* ── PHASE: ACTION ───────────────────────────────────────── */}
-            {phase === 'action' && (
+            {/* ── PHASE: AKSI ─────────────────────────────────────────── */}
+            {phase === 'aksi' && (
               <div className="detective-action animate-fadeInUp">
+                {/* Kesimpulan kategori */}
                 <div className="action-context">
-                  <span className="action-context-badge" style={{ background: CATEGORY_CONFIG[currentCase.category].bg, borderColor: CATEGORY_CONFIG[currentCase.category].border, color: CATEGORY_CONFIG[currentCase.category].color }}>
+                  <span
+                    className="action-context-badge"
+                    style={{
+                      background: CATEGORY_CONFIG[currentCase.category].bg,
+                      borderColor: CATEGORY_CONFIG[currentCase.category].border,
+                      color: CATEGORY_CONFIG[currentCase.category].color,
+                    }}
+                  >
                     {CATEGORY_CONFIG[currentCase.category].emoji} {CATEGORY_CONFIG[currentCase.category].name}
                   </span>
                   <span>{currentCase.conclusion}</span>
                 </div>
 
                 <div className="action-question">
-                  🛠️ Apa <strong>tindakan yang tepat</strong> untuk {currentCase.name}?
+                  🛠️ Terus, <strong>{currentCase.name}</strong> paling baik diapakan?
                 </div>
 
-                <div className="action-choices-grid">
+                <div className="action-choices-grid l3-action-big-grid">
                   {shuffledActions.map((act, i) => {
                     let cls = '';
                     if (actionAnswer !== null) {
-                      if (act.correct)  cls = 'act-correct';
+                      if (act.correct)          cls = 'act-correct';
                       else if (i === actionAnswer) cls = 'act-wrong';
                       else cls = 'act-dim';
                     }
@@ -402,11 +320,10 @@ export default function Level3Page() {
                       <button
                         key={i}
                         id={`l3-act-${i}`}
-                        className={`action-choice-btn ${cls}`}
+                        className={`action-choice-btn l3-act-big ${cls}`}
                         onClick={() => handleActionAnswer(i)}
                         disabled={actionAnswer !== null}
                       >
-                        <span className="act-letter">{String.fromCharCode(65 + i)}</span>
                         <span className="act-text">{act.text}</span>
                         {cls === 'act-correct' && <span>✅</span>}
                         {cls === 'act-wrong'   && <span>❌</span>}
@@ -416,56 +333,51 @@ export default function Level3Page() {
                 </div>
 
                 {feedbackMsg && (
-                  <div className={`detective-feedback ${actionAnswer !== null && shuffledActions[actionAnswer]?.correct ? 'feedback-correct' : 'feedback-wrong'}`}>
+                  <div className={`detective-feedback ${actCorrect ? 'feedback-correct' : 'feedback-wrong'}`}>
                     {feedbackMsg}
                   </div>
                 )}
               </div>
             )}
 
-            {/* ── PHASE: SUMMARY ──────────────────────────────────────── */}
-            {phase === 'summary' && (
+            {/* ── PHASE: RINGKASAN ────────────────────────────────────── */}
+            {phase === 'ringkasan' && (
               <div className="detective-summary animate-bounceIn">
                 <div className="summary-title">
-                  {wrongClues.length === 0 && categoryAnswer === currentCase.category && shuffledActions[actionAnswer]?.correct
-                    ? '🏆 Investigasi Sempurna!'
-                    : '✅ Kasus Selesai!'}
+                  {catCorrect && actCorrect ? '🏆 Kamu Hebat!' : '✅ Kasus Selesai!'}
                 </div>
 
+                {/* Penjelasan singkat */}
                 <div className="summary-explanation">
                   <span>💡</span>
                   <span>{currentCase.actionExplanation}</span>
                 </div>
 
-                {/* Score breakdown */}
+                {/* Score breakdown simpel */}
                 <div className="summary-score-grid">
                   <div className="summary-score-item">
-                    <span>🔍 Petunjuk</span>
-                    <span className="summary-pts">{(CLUES_TO_SELECT - wrongClues.length) * PTS_CLUE_CORRECT} XP</span>
-                  </div>
-                  <div className="summary-score-item">
-                    <span>🗂️ Kategori</span>
-                    <span className="summary-pts">{categoryAnswer === currentCase.category ? PTS_CATEGORY : 0} XP</span>
+                    <span>🤔 Tebak Jenis</span>
+                    <span className="summary-pts">{catCorrect ? PTS_CATEGORY : 0} XP</span>
                   </div>
                   <div className="summary-score-item">
                     <span>🛠️ Tindakan</span>
-                    <span className="summary-pts">{shuffledActions[actionAnswer]?.correct ? PTS_ACTION : 0} XP</span>
+                    <span className="summary-pts">{actCorrect ? PTS_ACTION : 0} XP</span>
                   </div>
-                  {wrongClues.length === 0 && categoryAnswer === currentCase.category && shuffledActions[actionAnswer]?.correct && (
+                  {catCorrect && actCorrect && (
                     <div className="summary-score-item summary-bonus">
-                      <span>🏆 Bonus Sempurna</span>
+                      <span>🌟 Bonus Sempurna!</span>
                       <span className="summary-pts">+{PTS_PERFECT_CASE} XP</span>
                     </div>
                   )}
                 </div>
 
                 <button
-                  id={`btn-l3-next-case-${caseIdx}`}
+                  id={`btn-l3-next-${caseIdx}`}
                   className="btn btn-purple btn-lg btn-full"
                   onClick={handleNextCase}
                   style={{ marginTop: '8px' }}
                 >
-                  {caseIdx + 1 < TOTAL_CASES ? '➡️ KASUS BERIKUTNYA!' : '🏁 LIHAT HASIL!'}
+                  {caseIdx + 1 < TOTAL_CASES ? '➡️ Kasus Berikutnya!' : '🏁 Lihat Hasil!'}
                 </button>
               </div>
             )}
@@ -478,9 +390,9 @@ export default function Level3Page() {
           <div className="modal-overlay">
             <div className="modal-box animate-bounceIn">
               <div style={{ fontSize: '3.5rem', marginBottom: '8px' }}>🕵️</div>
-              <h3>Semua Kasus Terselesaikan!</h3>
+              <h3>Semua Kasus Selesai!</h3>
               <p>
-                Kamu adalah <strong>Detektif Lingkungan</strong> sejati Desa Sukaraja!
+                Kamu adalah <strong>Pahlawan Lingkungan</strong> Desa Sukaraja! 🌿
               </p>
               <p>
                 Kasus sempurna:{' '}
