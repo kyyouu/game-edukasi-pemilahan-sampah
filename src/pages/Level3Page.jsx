@@ -18,7 +18,6 @@ const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
 const CATEGORY_CONFIG = [
   { id: 0, name: 'Organik',   emoji: '🌿', color: '#27ae60', bg: '#e8fdf0', border: '#27ae60' },
   { id: 1, name: 'Anorganik', emoji: '♻️', color: '#2980b9', bg: '#e8f4fd', border: '#2980b9' },
-  { id: 2, name: 'B3',        emoji: '☣️', color: '#c0392b', bg: '#fde8e8', border: '#c0392b' },
 ];
 
 const TOTAL_CASES = 2; // 2 kasus untuk babak 3

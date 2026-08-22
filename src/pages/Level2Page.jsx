@@ -14,7 +14,6 @@ const TOTAL_ITEMS = 5; // 5 item untuk babak 2
 const CATEGORY_CONFIG = [
   { id: 0, name: 'Organik',    emoji: '🌿', color: '#2ECC71', shadow: '#1a8a45', bg: '#e8fdf0', border: '#27ae60' },
   { id: 1, name: 'Anorganik',  emoji: '♻️', color: '#3498DB', shadow: '#1a5a9e', bg: '#e8f4fd', border: '#2980b9' },
-  { id: 2, name: 'B3',         emoji: '☣️', color: '#E74C3C', shadow: '#922b21', bg: '#fde8e8', border: '#c0392b' },
 ];
 
 export default function Level2Page() {
@@ -241,7 +240,7 @@ export default function Level2Page() {
             <p>
               Sampah dari seluruh desa datang lewat <strong>conveyor belt</strong>!
               Kamu harus <strong>mengklik sampah</strong> sebelum lolos,
-              lalu pilih kategori yang benar: Organik, Anorganik, atau B3.
+              lalu pilih kategori yang benar: Organik atau Anorganik.
             </p>
             <div className="intro-rules-row">
               <div className="intro-rule">⏰ <strong>{ITEM_TIME}s</strong><br/>per sampah</div>
