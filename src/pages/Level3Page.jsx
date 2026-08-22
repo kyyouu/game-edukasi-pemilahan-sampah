@@ -42,8 +42,6 @@ export default function Level3Page() {
   const [shuffledActions, setShuffledActions] = useState([]);
   const [caseScore, setCaseScore]         = useState(0);
   const [feedbackMsg, setFeedbackMsg]     = useState('');
-  const [showFunFact, setShowFunFact]     = useState(false);
-
   useEffect(() => { if (!state.playerName) navigate('/'); }, [state.playerName, navigate]);
 
   const currentCase = gameCases[caseIdx];
@@ -56,7 +54,6 @@ export default function Level3Page() {
     setActionAnswer(null);
     setCaseScore(0);
     setFeedbackMsg('');
-    setShowFunFact(false);
     setPhase('intro');
   }, [gameCases]);
 
@@ -65,11 +62,7 @@ export default function Level3Page() {
   // ─── Phase: intro → kategori ──────────────────────────────────────────────
   const handleStart = () => {
     sfx.click();
-    setShowFunFact(true);
-    setTimeout(() => {
-      setShowFunFact(false);
-      setPhase('kategori');
-    }, 2200);
+    setPhase('kategori');
   };
 
   // ─── Phase: kategori ─────────────────────────────────────────────────────
@@ -223,23 +216,22 @@ export default function Level3Page() {
                 <div className="mission-badge">📋 KASUS BARU!</div>
                 <p className="mission-text">{currentCase.mission}</p>
 
-                {/* Fun Fact bubble */}
-                {showFunFact && (
-                  <div className="funfact-bubble animate-bounceIn">
-                    💡 <strong>Tahukah kamu?</strong><br/>
-                    {currentCase.funFact}
+                {/* Fun Fact bubble - ditampilkan langsung agar anak SD bisa baca santai */}
+                {currentCase.funFact && (
+                  <div className="funfact-bubble animate-fadeInUp">
+                    💡 <strong>Tahukah Kamu?</strong><br/>
+                    <span>{currentCase.funFact}</span>
                   </div>
                 )}
 
-                {!showFunFact && (
-                  <button
-                    id={`btn-l3-start-${caseIdx}`}
-                    className="btn btn-purple btn-lg btn-full"
-                    onClick={handleStart}
-                  >
-                    🔍 Yuk Tebak!
-                  </button>
-                )}
+                <button
+                  id={`btn-l3-start-${caseIdx}`}
+                  className="btn btn-purple btn-lg btn-full"
+                  onClick={handleStart}
+                  style={{ marginTop: '6px' }}
+                >
+                  🔍 YUK TEBAK JENISNYA! ➡️
+                </button>
               </div>
             )}
 
